@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+# set this script in your ~/.ssh/authorized_keys as
+# command="/path/to/update-client <HOSTNAME>" <KEY>
+# to only allow calls to this script for that key
+#
+
+# where are we?
+BASEDIR=/home/dns-update
+
+# where to put the source snippets                                                                                                                                                                                 
+SOURCEDIR=$BASEDIR/hosts
+
+# currently, the hostname is tied to the SSH key via authorized_keys
+# TODO: this could also be a parameter from the client to support multiple hosts per key
+HOSTNAME="$1"
+
+# get parameters from client
+set -- $SSH_ORIGINAL_COMMAND
+
+# check for the first argument to be something like update-client, with or without path
+case "$1" in
+    *update-client)
+        ;;
+    *)
+        echo "need 'update-client' as first parameter"
+        exit 1
+        ;;
+esac
+
+# the second parameter is the new IP ADDRESS
+# (simple) validation is done later by the zone generator
+IPADDRESS="$2"
+
+# some simple sanity checks
+if [ "$HOSTNAME"x = "x" ] ; then
+    echo "no hostname given"
+    exit 1
+fi
+if [ "$IPADDRESS"x = "x" ] ; then
+    echo "no IP address given"
+    exit 1
+fi
+
+
+# write client IP to snippet file
+echo "$IPADDRESS" > "$SOURCEDIR/$HOSTNAME"
+
+# update the zonefile
+$BASEDIR/generate-zone
+
+# reload the nameserver
+sudo /etc/init.d/nsd3 reload
