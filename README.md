@@ -1,3 +1,8 @@
+TODO: describe what this is
+TODO: describe what this does
+TODO: describe where to get this
+
+
 HOW TO INSTALL ON THE SERVER
 ============================
 
@@ -38,7 +43,10 @@ HOW TO INSTALL ON THE SERVER
 
 
 4. Clone this git repository RIGHT INTO the home directory of the dedicated user.
-   Log in as or su(1) to the user and do `git clone $SOMEWHERE /home/dns-update`
+   Log in as or su(1) to the user and do:
+   ```
+   $ git clone https://github.com/mmitch/dns-update.git /home/dns-update
+   ```
 
 
 5. Create a local branch (`git checkout -b local`).  Do your local configuration:
