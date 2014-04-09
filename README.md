@@ -100,5 +100,6 @@ HOW TO INSTALL ON A CLIENT
   - change hostname in `command=""` string
   - change public key
 - to update, call `ssh -i /path/to/new/identity.pub dns-update@ns.example.com update-client <new.ip.add.ress>`
+  - or use `auto` instead of the ip address to use the ssl source ip address automatically (useful if you're behind a router and don't know your outside IP, but want to send exactly this IP to the server)
 
 - ppp-update-script not finished yet!

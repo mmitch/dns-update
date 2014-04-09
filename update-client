@@ -32,6 +32,13 @@ esac
 # (simple) validation is done later by the zone generator
 IPADDRESS="$2"
 
+# automatic IP ADDRESS detection:
+# use connection source ip
+if [ "$IPADDRESS"x = "auto"x ] ; then
+    set -- $SSH_CONNECTION
+    IPADDRESS=$1
+fi
+
 # some simple sanity checks
 if [ "$HOSTNAME"x = "x" ] ; then
     echo "no hostname given"
