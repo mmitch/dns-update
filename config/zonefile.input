@@ -1,0 +1,15 @@
+$ORIGIN dynip.example.com.                           ; designates the start of this zone file in the namespace
+$TTL   1m                                            ; default expiration time of all resource records without their own TTL value
+
+dynip.example.com.         IN  SOA  ns.example.com. hostmaster.example.com. (
+                                    §SERIAL§   ;serial
+                                    60               ;minimum refresh 60 seconds
+                                    60               ;retry every 60 seconds
+                                    60               ;expire after 60 seconds
+                                    60               ;minimum 60 seconds
+                                    )
+dynip.example.com.         NS       ns.example.com.  ;ns.example.com is a nameserver for dynip.example.com.
+
+static                     A        127.0.0.1        ;reflecting example entry
+
+; dynamically generated entries follow:

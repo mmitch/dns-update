@@ -53,7 +53,7 @@ HOW TO INSTALL ON THE SERVER
 
    * edit `.ssh/authorized_keys` (see notes in file)
    * edit the parameters on the top of `update-client` e.g. zone file name
-   * in `generate-zone`: edit the static part of the zone file (the <<HERE_DOCUMENT)
+   * edit `config/zonefile.input` to your needs (`§SERIAL§` will be replaced automatically)
    * edit the bottom part of `update-client` if you used a different sudo configuration
      than in this example
 
