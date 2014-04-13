@@ -60,7 +60,11 @@ fi
 # write client IP to snippet file
 echo "$IPADDRESS" > "$HOSTS_DIR/$HOSTNAME"
 
-# combine snippet files
+# combine snippet files:
+# find nicely formatted host files and append them (IPv4 only for now)
+# (please: no line breaks in file names - DNS does not support this anyway)
+# TODO: simple check for valid hostnames
+# TODO: more complete check for IP addresses, this currently allows "999.555.333.111" like seen on TV
 grep -HE '^[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}$' "${HOSTS_DIR}"/* \
 | sort \
 | sed 's/:/ /' \
@@ -80,8 +84,38 @@ else
     # declare new file as current file
     mv "$HOSTS_NEW" "$HOSTS_CUR"
 
-    # update the zonefile
-    $BASEDIR/generate-zone "$ZONEFILE" "$HOSTS_DIR"
+    # back up zone file if current file exists and has contents
+    if [ -f "${ZONEFILE}" -a -s "${ZONEFILE}" ] ; then
+	mv "${ZONEFILE}" "${ZONEFILE}.bak"
+    fi
+
+    # generate serial
+    SERIAL=$(date +%Y%m%d%H%M%S)
+
+    # generate new zone file
+    cat > "${ZONEFILE}" <<EOF
+\$ORIGIN dynip.example.com.                           ; designates the start of this zone file in the namespace
+\$TTL   1m                                            ; default expiration time of all resource records without their own TTL value
+
+dynip.example.com.         IN  SOA  ns.example.com. hostmaster.example.com. (
+                                    ${SERIAL}   ;serial
+                                    60               ;minimum refresh 60 seconds
+                                    60               ;retry every 60 seconds
+                                    60               ;expire after 60 seconds
+                                    60               ;minimum 60 seconds
+                                    )
+dynip.example.com.         NS       ns.example.com.  ;ns.example.com is a nameserver for dynip.example.com.
+
+static                     A        127.0.0.1        ;reflecting example entry
+
+; dynamically generated entries follow:
+EOF
+
+    # read hostnames and append to zonefile
+    while read FILENAME IPADDRESS; do
+	HOSTNAME="$(basename "${FILENAME}")"
+	printf '%-32s A %-15s ;\n' "${HOSTNAME}" "${IPADDRESS}"
+    done < "$HOSTS_CUR" >> "${ZONEFILE}"
 
     # reload the nameserver
     sudo /etc/init.d/nsd3 reload
