@@ -52,8 +52,8 @@ HOW TO INSTALL ON THE SERVER
 5. Create a local branch (`git checkout -b local`).  Do your local configuration:
 
    * edit `.ssh/authorized_keys` (see notes in file)
-   * in `generate-zone`: change $ZONEFILE to your zone file name and edit the static
-     part of the zone file (the <<HERE_DOCUMENT)
+   * edit the parameters on the top of `update-client` e.g. zone file name
+   * in `generate-zone`: edit the static part of the zone file (the <<HERE_DOCUMENT)
    * edit the bottom part of `update-client` if you used a different sudo configuration
      than in this example
 

@@ -8,8 +8,11 @@
 # where are we?
 BASEDIR=/home/dns-update
 
-# where to put the source snippets                                                                                                                                                                                 
-SOURCEDIR=$BASEDIR/hosts
+# where to put the new zone file
+ZONEFILE="$BASEDIR"/zones/dynip.example.com.zone
+
+# where to put the source snippets
+SOURCEDIR="$BASEDIR"/hosts
 
 # currently, the hostname is tied to the SSH key via authorized_keys
 # TODO: this could also be a parameter from the client to support multiple hosts per key
@@ -54,7 +57,7 @@ fi
 echo "$IPADDRESS" > "$SOURCEDIR/$HOSTNAME"
 
 # update the zonefile
-$BASEDIR/generate-zone
+$BASEDIR/generate-zone "$ZONEFILE" "$SOURCEDIR"
 
 # reload the nameserver
 sudo /etc/init.d/nsd3 reload

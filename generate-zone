@@ -3,13 +3,12 @@
 # generate a zone file from small source file snippets: file name = host, file content = ip
 #
 
+# BEWARE: there is configuration to be done in the <<HERE_DOCUMENT!
+
 # where to put the new zone file
-ZONEFILE=/home/dns-update/zones/dynip.example.com.zone
-
+ZONEFILE="$1"
 # where to find the source snippets
-SOURCEDIR=/home/dns-update/hosts
-
-# beware: further configuration ahead in the <<HERE_DOCUMENT!
+SOURCEDIR="$2"
 
 # back up zone file if current file exists and has contents
 if [ -f "${ZONEFILE}" -a -s "${ZONEFILE}" ] ; then
