@@ -12,7 +12,11 @@ BASEDIR=/home/dns-update
 ZONEFILE="$BASEDIR"/zones/dynip.example.com.zone
 
 # where to put the source snippets
-SOURCEDIR="$BASEDIR"/hosts
+HOSTS_DIR="$BASEDIR"/hosts
+
+# combined host entry files
+HOSTS_CUR="$HOSTS_DIR"/allhosts.cur
+HOSTS_NEW="$HOSTS_DIR"/allhosts.new
 
 # currently, the hostname is tied to the SSH key via authorized_keys
 # TODO: this could also be a parameter from the client to support multiple hosts per key
@@ -54,10 +58,32 @@ fi
 
 
 # write client IP to snippet file
-echo "$IPADDRESS" > "$SOURCEDIR/$HOSTNAME"
+echo "$IPADDRESS" > "$HOSTS_DIR/$HOSTNAME"
 
-# update the zonefile
-$BASEDIR/generate-zone "$ZONEFILE" "$SOURCEDIR"
+# combine snippet files
+grep -HE '^[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}$' "${HOSTS_DIR}"/* \
+| sort \
+| sed 's/:/ /' \
+> "$HOSTS_NEW"
 
-# reload the nameserver
-sudo /etc/init.d/nsd3 reload
+# create current combined file if absent, otherwise mark as updated
+touch "$HOSTS_CUR"
+
+# check for changes to process
+if cmp -s "$HOSTS_NEW" "$HOSTS_CUR" ; then
+
+    # new file is uneccessary
+    rm "$HOSTS_NEW"
+
+else
+
+    # declare new file as current file
+    mv "$HOSTS_NEW" "$HOSTS_CUR"
+
+    # update the zonefile
+    $BASEDIR/generate-zone "$ZONEFILE" "$HOSTS_DIR"
+
+    # reload the nameserver
+    sudo /etc/init.d/nsd3 reload
+
+fi
