@@ -88,21 +88,21 @@ else
     mv "${HOSTS_NEW}" "${HOSTS_CUR}"
 
     # back up zone file if current file exists and has contents
-    if [ -f "${ZONEFILE}" -a -s "${ZONEFILE}" ] ; then
-	mv "${ZONEFILE}" "${ZONEFILE}.bak"
+    if [ -f "${ZONEFILE_OUTPUT}" -a -s "${ZONEFILE_OUTPUT}" ] ; then
+	mv "${ZONEFILE_OUTPUT}" "${ZONEFILE_OUTPUT}.bak"
     fi
 
     # generate serial
     SERIAL=$(date +%Y%m%d%H%M%S)
 
     # generate new zone file
-    sed "s/§SERIAL§/${SERIAL}/" < "${ZONEFILE_INPUT}" > "${ZONEFILE}"
+    sed "s/§SERIAL§/${SERIAL}/" < "${ZONEFILE_INPUT}" > "${ZONEFILE_OUTPUT}"
 
     # read hostnames and append to zonefile
     while read FILENAME IPADDRESS; do
 	HOSTNAME="$(basename "${FILENAME}")"
 	printf '%-32s A %-15s ;\n' "${HOSTNAME}" "${IPADDRESS}"
-    done < "${HOSTS_CUR}" >> "${ZONEFILE}"
+    done < "${HOSTS_CUR}" >> "${ZONEFILE_OUTPUT}"
 
     # reload the nameserver
     sudo /etc/init.d/nsd3 reload
