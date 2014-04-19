@@ -1,6 +1,14 @@
-TODO: describe what this is
-TODO: describe what this does
-TODO: describe where to get this
+   dns-update - small dynamic DNS suite using SSH
+   Copyright (C) 2014  Christian Garbs <mitch@cgarbs.de>
+   Licensed under GNU GPL v3 (or later)
+   Homepage: https://github.com/mmitch/dns-update
+
+This is a small suite to enably dynamic DNS updates from remote hosts.
+It's my personal replacement for the not-free-any-more DynDNS service.
+Clients use SSH to update their IP.  While this won't work with J. Random Router
+that has a DynDNS client built in, it works on all of my systems (they have the
+capabilites for scripts and SSH connections), it's very easy to build and use and
+it provides the full SSH possibilities of encryption and authentication - for free.
 
 
 HOW TO INSTALL ON THE SERVER
@@ -103,4 +111,5 @@ HOW TO INSTALL ON A CLIENT
 - to update, call `ssh -i /path/to/new/identity.pub dns-update@ns.example.com update-client <new.ip.add.ress>`
   - or use `auto` instead of the ip address to use the ssl source ip address automatically (useful if you're behind a router and don't know your outside IP, but want to send exactly this IP to the server)
 
-- ppp-update-script not finished yet!
+- ppp-update-script not finished yet (but at least on Debian based distributions, you can simple write the `ssh` commandline (preferably with `auto`) into a new file under `/etc/ppp/ip-up.d` and you're set)
+
