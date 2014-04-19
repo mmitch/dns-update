@@ -1,7 +1,13 @@
-   dns-update - small dynamic DNS suite using SSH
-   Copyright (C) 2014  Christian Garbs <mitch@cgarbs.de>
-   Licensed under GNU GPL v3 (or later)
-   Homepage: https://github.com/mmitch/dns-update
+dns-update
+==========
+
+* dns-update - small dynamic DNS suite using SSH
+* Copyright (C) 2014  Christian Garbs <mitch@cgarbs.de>
+* Licensed under GNU GPL v3 (or later)
+* Homepage: https://github.com/mmitch/dns-update
+
+ABOUT
+-----
 
 This is a small suite to enably dynamic DNS updates from remote hosts.
 It's my personal replacement for the not-free-any-more DynDNS service.
@@ -12,7 +18,7 @@ it provides the full SSH possibilities of encryption and authentication - for fr
 
 
 HOW TO INSTALL ON THE SERVER
-============================
+----------------------------
 
 1. Install a nameserver of your choice and serve a zone dedicated to your dynamical IPs.
    You propably need a delegation for that zone from somewhere else.
@@ -75,7 +81,7 @@ HOW TO INSTALL ON THE SERVER
 
 
 HOW TO UPDATE THE SERVER
-========================
+------------------------
 
 
 1. Log in/su(1) to user dns-update.
@@ -101,7 +107,7 @@ HOW TO UPDATE THE SERVER
 
 
 HOW TO INSTALL ON A CLIENT
-==========================
+--------------------------
 
 - create local SSH key
 - add pubkey to `.ssh/authorized_keys` on server
