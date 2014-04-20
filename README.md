@@ -75,6 +75,10 @@ HOW TO INSTALL ON THE SERVER
 
    Fix the file permissions on `.ssh` and `.ssh/authorized_keys`?!
    TODO: watch what git is doing there and what can be done against it.
+   
+   (In case you're wondering why a non-functional `authorized_keys` file is part of this repository:
+    That way it's automatically tracked in your local branch and you can't forget to git-add it.
+	Also: inline help on first edit.)
 
 6. Basically, you're ready to go now!
 
