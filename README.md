@@ -106,6 +106,15 @@ HOW TO UPDATE THE SERVER
 
 
 
+LOGGING ON THE SERVER
+---------------------
+
+Your SSH server propably already logs to `/var/log/auth.log`.  There
+you can find successful client logins as well as diagnostic error
+messages when something goes wrong.
+
+
+
 HOW TO INSTALL ON A CLIENT
 --------------------------
 
