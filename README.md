@@ -24,12 +24,12 @@ HOW TO INSTALL ON THE SERVER
    You propably need a delegation for that zone from somewhere else.
    All this is NOT handled in this howto.
 
-   My setup works with nsd3 as nameserver but apart from "please reload the zonefile"
+   My setup works with nsd as nameserver but apart from "please reload the zonefile"
    there is no interaction with the nameserver, so it should be easily portable.
 
    The example configuration creates the zone `dynip.example.com` in the file
    `ZONEFILE=/home/dns-update/zones/dynip.example.com.zone`.
-   In `/etc/nsd3/nsd.conf`, the zone paragraph would look like this:
+   In `/etc/nsd/nsd.conf`, the zone paragraph would look like this:
 
    ```
    zone:
@@ -52,7 +52,7 @@ HOW TO INSTALL ON THE SERVER
 3. Allow this new user to reload your nameserver configuration when a zonefile changes.
    
    My setup does this via sudo(8).  I created the file `/etc/sudoers.d/local-dns-update`
-   which just contains the line `dns-update ALL =NOPASSWD: /etc/init.d/nsd3 reload`.
+   which just contains the line `dns-update ALL =NOPASSWD: /bin/systemctl reload nsd`.
    YMMV.
 
 

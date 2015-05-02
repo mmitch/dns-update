@@ -105,6 +105,6 @@ else
     done < "${HOSTS_CUR}" >> "${ZONEFILE_OUTPUT}"
 
     # reload the nameserver
-    sudo /etc/init.d/nsd3 reload
+    sudo /bin/systemctl reload nsd
 
 fi
