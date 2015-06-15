@@ -47,6 +47,8 @@ IPADDRESS="${2}"
 if [ "${IPADDRESS}" = 'auto' ] ; then
     set -- ${SSH_CONNECTION}
     IPADDRESS=${1}
+    # print current IP as the client obviously does not know it
+    echo $IPADDRESS
 fi
 
 # some simple sanity checks
