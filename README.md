@@ -41,7 +41,7 @@ HOW TO INSTALL ON THE SERVER
 2. Create a new user for the sole purpose of handling the dynamic DNS updates.
    This user needs a normal shell (`/bin/sh` should be enough - with `/bin/false`, the
    SSH forced commands won't run…), a home directory and SSH access (be sure to include
-   him in AllowUsers/AllowGroups of you use them to restrict access via SSH).
+   him in AllowUsers/AllowGroups if you use them to restrict access via SSH).
    The password of the user can and should be disabled (either after configuration is
    finished or you'll have to use su(1) while configuring stuff).
 
@@ -130,5 +130,5 @@ HOW TO INSTALL ON A CLIENT
 - to update, call `ssh -i /path/to/new/identity.pub dns-update@ns.example.com update-client <new.ip.add.ress>`
   - or use `auto` instead of the ip address to use the ssl source ip address automatically (useful if you're behind a router and don't know your outside IP, but want to send exactly this IP to the server)
 
-- ppp-update-script not finished yet (but at least on Debian based distributions, you can simple write the `ssh` commandline (preferably with `auto`) into a new file under `/etc/ppp/ip-up.d` and you're set)
+- ppp-update-script not finished yet (but at least on Debian based distributions, you can simply write the `ssh` commandline (preferably with `auto`) into a new file under `/etc/ppp/ip-up.d` and you're set)
 
