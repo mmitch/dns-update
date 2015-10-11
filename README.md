@@ -9,7 +9,7 @@ dns-update
 ABOUT
 -----
 
-This is a small suite to enably dynamic DNS updates from remote hosts.
+This is a small suite to enable dynamic DNS updates from remote hosts.
 It's my personal replacement for the not-free-any-more DynDNS service.
 Clients use SSH to update their IP.  While this won't work with J. Random Router
 that has a DynDNS client built in, it works on all of my systems (they have the
