@@ -21,6 +21,9 @@ HOSTS_DIR="${BASEDIR}"/hosts
 HOSTS_CUR="${HOSTS_DIR}"/allhosts.cur
 HOSTS_NEW="${HOSTS_DIR}"/allhosts.new
 
+# lockfile
+LOCKFILE="${HOSTS_DIR}"/.flock
+
 # currently, the hostname is tied to the SSH key via authorized_keys
 # TODO: this could also be a parameter from the client to support multiple hosts per key
 HOSTNAME="${1}"
@@ -65,48 +68,54 @@ fi
 # write client IP to snippet file
 echo "${IPADDRESS}" > "${HOSTS_DIR}/${HOSTNAME}"
 
-# combine snippet files:
-# find nicely formatted host files and append them (IPv4 only for now)
-# (please: no line breaks in file names - DNS does not support this anyway)
-# TODO: simple check for valid hostnames
-# TODO: more complete check for IP addresses, this currently allows "999.555.333.111" like seen on TV
-grep -HE '^[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}$' "${HOSTS_DIR}"/* \
-| sort \
-| sed 's/:/ /' \
-> "${HOSTS_NEW}"
+(
+    # use fd 9 as lockfile
+    flock -w 60 9
 
-# create current combined file if absent, otherwise mark as updated
-touch "${HOSTS_CUR}"
+    # combine snippet files:
+    # find nicely formatted host files and append them (IPv4 only for now)
+    # (please: no line breaks in file names - DNS does not support this anyway)
+    # TODO: simple check for valid hostnames
+    # TODO: more complete check for IP addresses, this currently allows "999.555.333.111" like seen on TV
+    grep -HE '^[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}\.[[:digit:]]{1,3}$' "${HOSTS_DIR}"/* \
+	| sort \
+	| sed 's/:/ /' \
+	      > "${HOSTS_NEW}"
 
-# check for changes to process
-if cmp -s "${HOSTS_NEW}" "${HOSTS_CUR}" ; then
+    # create current combined file if absent, otherwise mark as updated
+    touch "${HOSTS_CUR}"
 
-    # new file is uneccessary
-    rm "${HOSTS_NEW}"
+    # check for changes to process
+    if cmp -s "${HOSTS_NEW}" "${HOSTS_CUR}" ; then
 
-else
+	# new file is uneccessary
+	rm "${HOSTS_NEW}"
 
-    # declare new file as current file
-    mv "${HOSTS_NEW}" "${HOSTS_CUR}"
+    else
 
-    # back up zone file if current file exists and has contents
-    if [ -f "${ZONEFILE_OUTPUT}" -a -s "${ZONEFILE_OUTPUT}" ] ; then
-	mv "${ZONEFILE_OUTPUT}" "${ZONEFILE_OUTPUT}.bak"
+	# declare new file as current file
+	mv "${HOSTS_NEW}" "${HOSTS_CUR}"
+
+	# back up zone file if current file exists and has contents
+	if [ -f "${ZONEFILE_OUTPUT}" -a -s "${ZONEFILE_OUTPUT}" ] ; then
+	    mv "${ZONEFILE_OUTPUT}" "${ZONEFILE_OUTPUT}.bak"
+	fi
+
+	# generate serial
+	SERIAL=$(date +%Y%m%d%H%M%S)
+
+	# generate new zone file
+	sed "s/§SERIAL§/${SERIAL}/" < "${ZONEFILE_INPUT}" > "${ZONEFILE_OUTPUT}"
+
+	# read hostnames and append to zonefile
+	while read FILENAME IPADDRESS; do
+	    HOSTNAME="$(basename "${FILENAME}")"
+	    printf '%-32s A %-15s ;\n' "${HOSTNAME}" "${IPADDRESS}"
+	done < "${HOSTS_CUR}" >> "${ZONEFILE_OUTPUT}"
+
+	# reload the nameserver
+	sudo /bin/systemctl reload nsd
+
     fi
 
-    # generate serial
-    SERIAL=$(date +%Y%m%d%H%M%S)
-
-    # generate new zone file
-    sed "s/§SERIAL§/${SERIAL}/" < "${ZONEFILE_INPUT}" > "${ZONEFILE_OUTPUT}"
-
-    # read hostnames and append to zonefile
-    while read FILENAME IPADDRESS; do
-	HOSTNAME="$(basename "${FILENAME}")"
-	printf '%-32s A %-15s ;\n' "${HOSTNAME}" "${IPADDRESS}"
-    done < "${HOSTS_CUR}" >> "${ZONEFILE_OUTPUT}"
-
-    # reload the nameserver
-    sudo /bin/systemctl reload nsd
-
-fi
+) 9>"${LOCKFILE}"
