@@ -101,6 +101,10 @@ echo "${IPADDRESS}" > "${HOSTS_DIR}/${HOSTNAME}"
 	    mv "${ZONEFILE_OUTPUT}" "${ZONEFILE_OUTPUT}.bak"
 	fi
 
+	# serial has 1 second resolution, so wait one second to not accidentially
+	# generate the same serial twice (yeah, cheap lame hack, but come on...)
+	sleep 1
+
 	# generate serial
 	SERIAL=$(date +%Y%m%d%H%M%S)
 
