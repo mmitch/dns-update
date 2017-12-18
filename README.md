@@ -105,8 +105,13 @@ HOW TO UPDATE THE SERVER
    $ git checkout local
    ```
 
-5. Merge the updates.  You might have to solve merge conflicts, be ready for that:
-   $ git merge master
+5. Merge the updates.  It's best to do a rebase to keep a clean
+   history (of course, using `merge` instead of `rebase` is also
+   possible).  You might have to solve merge conflicts, be ready for
+   that:
+   ```
+   $ git rebase master
+   ```
 
 
 
