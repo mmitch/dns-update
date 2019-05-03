@@ -66,14 +66,21 @@ fi
 
 
 # write client IP to snippet file
-echo "${IPADDRESS}" > "${HOSTS_DIR}/${HOSTNAME}"
+SNIPPETFILE="${HOSTS_DIR}/${HOSTNAME}"
+if [[ "${IPADDRESS}" =~ : ]]; then
+    # append _6 to filename for addresses that look like IPv6
+    # this allows two addresses per hostname (IPv4 and IPv6)
+    SNIPPETFILE="${SNIPPETFILE}_6"
+fi
+echo "${IPADDRESS}" > "${SNIPPETFILE}"
 
 (
     # use fd 9 as lockfile
     flock -w 60 9
 
     # combine snippet files:
-    # find nicely formatted host files and append them (IPv4 only for now)
+
+    # find nicely formatted IPv4 host snippet files and collect them
     # (please: no line breaks in file names - DNS does not support this anyway)
     # TODO: simple check for valid hostnames
     # TODO: more complete check for IP addresses, this currently allows "999.555.333.111" like seen on TV
@@ -81,6 +88,15 @@ echo "${IPADDRESS}" > "${HOSTS_DIR}/${HOSTNAME}"
 	| sort \
 	| sed 's/:/ /' \
 	      > "${HOSTS_NEW}"
+
+    # find IPv6 host snippet files and append them
+    # (please: no line breaks in file names - DNS does not support this anyway)
+    # TODO: simple check for valid hostnames
+    # TODO: more complete check for IP addresses, this is currently totally basic
+    grep -HE '^[0-9a-fA-F.:]+:[0-9a-fA-F.:]+$' "${HOSTS_DIR}"/* \
+	| sort \
+	| sed 's/_6:/ /' \
+	      >> "${HOSTS_NEW}"
 
     # create current combined file if absent, otherwise mark as updated
     touch "${HOSTS_CUR}"
@@ -114,7 +130,11 @@ echo "${IPADDRESS}" > "${HOSTS_DIR}/${HOSTNAME}"
 	# read hostnames and append to zonefile
 	while read FILENAME IPADDRESS; do
 	    HOSTNAME="$(basename "${FILENAME}")"
-	    printf '%-32s A %-15s ;\n' "${HOSTNAME}" "${IPADDRESS}"
+	    TYPE=A
+	    if [[ "${IPADDRESS}" =~ : ]]; then
+		TYPE=AAAA
+	    fi
+	    printf '%-32s %s %-15s ;\n' "${HOSTNAME}" "${TYPE}" "${IPADDRESS}"
 	done < "${HOSTS_CUR}" >> "${ZONEFILE_OUTPUT}"
 
 	# reload the nameserver

@@ -2,7 +2,7 @@ dns-update
 ==========
 
 * dns-update - small dynamic DNS suite using SSH
-* Copyright (C) 2014  Christian Garbs <mitch@cgarbs.de>
+* Copyright (C) 2014,2019  Christian Garbs <mitch@cgarbs.de>
 * Licensed under GNU GPL v3 (or later)
 * Homepage: https://github.com/mmitch/dns-update
 
@@ -157,3 +157,20 @@ HOW TO INSTALL ON A CLIENT
   distributions, you can simply write the `ssh` commandline
   (preferably with `auto`) into a new file under `/etc/ppp/ip-up.d`
   and you're set)
+
+
+
+IPV4 AND IPV6
+-------------
+
+A simple heuristic tries to tell apart IPv4 and IPv6 addresses and
+generate `A` or `AAAA` records automatically.  This allows a single
+client to have two addresses (one of each).
+
+If a client updates using the `auto` keyword, you can call the SSH
+client (at least the OpenSSH client) with the additional parameters
+`-4` or `-6` to use the respective protocol.  To update both address
+types, two ssh invocations are needed:
+
+1. `ssh -4 -i /path/to/new/identity.pub dns-update@ns.example.com update-client auto`
+2. `ssh -6 -i /path/to/new/identity.pub dns-update@ns.example.com update-client auto`
