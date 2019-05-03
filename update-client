@@ -1,4 +1,15 @@
 #!/bin/bash
+
+#
+# update-client - update generated zone file with a given IP address
+# Copyright (C) 2014,2019  Christian Garbs <mitch@cgarbs.de>
+# Licensed under GNU GPL v3 (or later)
+#
+# This file is part of:
+#  dns-update - small dynamic DNS suite using SSH
+#  https://github.com/mmitch/dns-update
+#
+
 #
 # set this script in your ~/.ssh/authorized_keys as
 # command="/path/to/update-client <HOSTNAME>" <KEY>
