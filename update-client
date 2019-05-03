@@ -62,7 +62,7 @@ if [ "${IPADDRESS}" = 'auto' ] ; then
     set -- ${SSH_CONNECTION}
     IPADDRESS=${1}
     # print current IP as the client obviously does not know it
-    echo $IPADDRESS
+    echo "${IPADDRESS}"
 fi
 
 # some simple sanity checks
@@ -124,7 +124,7 @@ echo "${IPADDRESS}" > "${SNIPPETFILE}"
 	mv "${HOSTS_NEW}" "${HOSTS_CUR}"
 
 	# back up zone file if current file exists and has contents
-	if [ -f "${ZONEFILE_OUTPUT}" -a -s "${ZONEFILE_OUTPUT}" ] ; then
+	if [ -f "${ZONEFILE_OUTPUT}" ] && [ -s "${ZONEFILE_OUTPUT}" ] ; then
 	    mv "${ZONEFILE_OUTPUT}" "${ZONEFILE_OUTPUT}.bak"
 	fi
 
@@ -139,7 +139,7 @@ echo "${IPADDRESS}" > "${SNIPPETFILE}"
 	sed "s/§SERIAL§/${SERIAL}/" < "${ZONEFILE_INPUT}" > "${ZONEFILE_OUTPUT}"
 
 	# read hostnames and append to zonefile
-	while read FILENAME IPADDRESS; do
+	while read -r FILENAME IPADDRESS; do
 	    HOSTNAME="$(basename "${FILENAME}")"
 	    TYPE=A
 	    if [[ "${IPADDRESS}" =~ : ]]; then
