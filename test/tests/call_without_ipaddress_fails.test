@@ -1,0 +1,9 @@
+#!/bin/bash
+
+source test-functions.sh
+
+expect_error_message \
+    'no IP address given' \
+    script_under_test 'host1' ''
+
+exit 0

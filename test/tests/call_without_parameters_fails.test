@@ -2,8 +2,7 @@
 
 source test-functions.sh
 
-if "$BINARY"; then
-    fail 'call without arguments should fail but did not'
-fi    
+expect_error \
+    "$BINARY"
 
 exit 0
