@@ -2,4 +2,4 @@ language: minimal
 
 install: true
 
-scripe: cd test && ./run-tests.sh
+script: cd test && ./run-tests.sh
