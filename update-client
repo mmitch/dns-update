@@ -133,7 +133,7 @@ echo "${IPADDRESS}" > "${SNIPPETFILE}"
 	sleep 1
 
 	# generate serial
-	SERIAL=$(date +%Y%m%d%H%M%S)
+	SERIAL=$(date +%m%d%H%M%S)
 
 	# generate new zone file
 	sed "s/§SERIAL§/${SERIAL}/" < "${ZONEFILE_INPUT}" > "${ZONEFILE_OUTPUT}"

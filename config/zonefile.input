@@ -2,7 +2,7 @@ $ORIGIN dynip.example.com.                           ; designates the start of t
 $TTL   1m                                            ; default expiration time of all resource records without their own TTL value
 
 dynip.example.com.         IN  SOA  ns.example.com. hostmaster.example.com. (
-                                    §SERIAL§   ;serial
+                                    §SERIAL§       ;serial
                                     60               ;minimum refresh 60 seconds
                                     60               ;retry every 60 seconds
                                     60               ;expire after 60 seconds
