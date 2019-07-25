@@ -1,0 +1,9 @@
+#!/bin/bash
+
+source test-functions.sh
+
+if "$BINARY"; then
+    fail 'call without arguments should fail but did not'
+fi    
+
+exit 0
