@@ -2,4 +2,4 @@ language: minimal
 
 install: true
 
-script: cd test && ./run-tests.sh
+script: shellcheck update-client && cd test && ./run-tests.sh

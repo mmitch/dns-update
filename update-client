@@ -40,6 +40,7 @@ LOCKFILE="${HOSTS_DIR}"/.flock
 HOSTNAME="${1}"
 
 # get parameters from client
+# shellcheck disable=SC2086
 set -- ${SSH_ORIGINAL_COMMAND}
 
 # check for the first argument to be something like update-client, with or without path
@@ -59,6 +60,7 @@ IPADDRESS="${2}"
 # automatic IP ADDRESS detection:
 # use connection source ip
 if [ "${IPADDRESS}" = 'auto' ] ; then
+    # shellcheck disable=SC2086
     set -- ${SSH_CONNECTION}
     IPADDRESS=${1}
     # print current IP as the client obviously does not know it
