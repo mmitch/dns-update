@@ -1,0 +1,5 @@
+language: minimal
+
+install: true
+
+scripe: cd test && ./run-tests.sh
