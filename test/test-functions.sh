@@ -10,12 +10,23 @@ setup_test()
     BINARY="$TESTDIR/update-client"
 
     # run from all possible subdirectory depths
-    SOURCE=update-client
-    if [ ! -e "$SOURCE" ]; then SOURCE="../$SOURCE"; fi
-    if [ ! -e "$SOURCE" ]; then SOURCE="../$SOURCE"; fi
+    SOURCEDIR=.
+    if [ ! -e "$SOURCEDIR/update-client" ]; then SOURCEDIR="../$SOURCEDIR"; fi
+    if [ ! -e "$SOURCEDIR/update-client" ]; then SOURCEDIR="../$SOURCEDIR"; fi
 
-    sed s:'^BASEDIR=/home/dns-update':"BASEDIR=\"$TESTDIR\"": < "$SOURCE" > "$BINARY"
+    sed s:'^BASEDIR=/home/dns-update':"BASEDIR=\"$TESTDIR\"": < "$SOURCEDIR/update-client" > "$BINARY"
     chmod +x "$BINARY"
+
+    mkdir "$TESTDIR"/{hosts,config,zones}
+    
+    cp "$SOURCEDIR"/config/zonefile.input "$TESTDIR"/config
+    
+    NSD_RELOADS="$TESTDIR/nsd_reloads"
+    echo -n > "$NSD_RELOADS"
+    export NSD_RELOADS
+
+    ZONEFILE="$TESTDIR/zones/dynip.example.com.zone"
+    export ZONEFILE
 }
 
 # $1 = client IP address from SSH connection
@@ -42,8 +53,44 @@ assert_contains()
 	echo "!!! file '$FILENAME' to be checked not found"
 	exit 1
     fi
-    if ! grep -q "$EXPECTED" "$FILE"; then
+    if ! grep -E -q "$EXPECTED" "$FILE"; then
 	echo "!!! $FILENAME does not contain '$EXPECTED' but:"
+	echo "!!! -- START --"
+	cat "$FILE"
+	echo "!!! --- END ---"
+	exit 1
+    fi
+}
+
+# $1 = file to check
+# $2 = expected content
+assert_contains()
+{
+    local FILE="$1" FILENAME="${1##*/}" EXPECTED="$2"
+    if [ ! -e "$FILE" ]; then
+	echo "!!! file '$FILENAME' to be checked not found"
+	exit 1
+    fi
+    if ! grep -E -q "$EXPECTED" "$FILE"; then
+	echo "!!! $FILENAME does not contain '$EXPECTED' but should:"
+	echo "!!! -- START --"
+	cat "$FILE"
+	echo "!!! --- END ---"
+	exit 1
+    fi
+}
+
+# $1 = file to check
+# $2 = unexpected content
+assert_contains_not()
+{
+    local FILE="$1" FILENAME="${1##*/}" EXPECTED="$2"
+    if [ ! -e "$FILE" ]; then
+	echo "!!! file '$FILENAME' to be checked not found"
+	exit 1
+    fi
+    if grep -E -q "$EXPECTED" "$FILE"; then
+	echo "!!! $FILENAME does contain '$EXPECTED' but should not:"
 	echo "!!! -- START --"
 	cat "$FILE"
 	echo "!!! --- END ---"
@@ -75,6 +122,30 @@ expect_error_message()
     cat "$OUTPUT"
 }
 
+# intercept calls to sudo
+sudo()
+{
+    if [ "$*" = "/bin/systemctl reload nsd" ]; then
+	grep ';serial' "$ZONEFILE" >> "$NSD_RELOADS"
+    else
+	echo "!!! unexpected sudo call with '$*'"
+	exit 1
+    fi
+}
+export -f sudo
 
+# $1 = expected reloads
+assert_nsd_reloads()
+{
+    local EXPECTED="$1" ACTUAL=0
+    while read -r ; do
+	ACTUAL=$(( ACTUAL + 1 ))
+    done < "$NSD_RELOADS"
+    
+    if [ "$ACTUAL" != "$EXPECTED" ]; then
+	echo "!!! expected '$EXPECTED' nsd reloads but actually had '$ACTUAL'"
+	exit 1
+    fi
+}
 
 setup_test

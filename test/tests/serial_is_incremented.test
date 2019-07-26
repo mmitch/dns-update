@@ -1,0 +1,20 @@
+#!/bin/bash
+
+source test-functions.sh
+
+script_under_test host1 1.2.3.4
+script_under_test host2 2.3.4.5
+script_under_test host3 3.4.5.6
+script_under_test host4 4.5.6.7
+
+assert_nsd_reloads 4
+OLD_SERIAL=0
+while read -r SERIAL _; do
+    if [ "$SERIAL" -le "$OLD_SERIAL" ]; then
+	echo "!!! new serial '$SERIAL' is not higher than '$OLD_SERIAL'"
+	exit 1
+    fi
+    OLD_SERIAL="$SERIAL"
+done < "$NSD_RELOADS"
+
+exit 0

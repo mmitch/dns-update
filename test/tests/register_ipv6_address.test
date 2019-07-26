@@ -1,0 +1,10 @@
+#!/bin/bash
+
+source test-functions.sh
+
+script_under_test host6 1234:5678::ab:cdef
+
+assert_contains "$ZONEFILE" '^host6\s+AAAA\s+1234:5678::ab:cdef\s*;$'
+assert_nsd_reloads 1
+
+exit 0

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+source test-functions.sh
+
+script_under_test host1 1.2.3.4
+script_under_test host1 1.2.3.4
+script_under_test host1 1.2.3.4
+script_under_test host1 1.2.3.4
+
+assert_nsd_reloads 1
+
+exit 0

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+source test-functions.sh
+
+GIVEN_IP=4455:6677::fafa
+set_ssh_client_ip "$GIVEN_IP"
+
+ACTUAL_IP="$(script_under_test host_name auto)"
+echo "$ACTUAL_IP"
+
+if [ "$ACTUAL_IP" != "$GIVEN_IP" ]; then
+    echo "!!! returned IP address is '$ACTUAL_IP' but '$GIVEN_IP' was expected"
+    exit 1
+fi
+
+exit 0

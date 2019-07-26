@@ -1,0 +1,10 @@
+#!/bin/bash
+
+source test-functions.sh
+
+script_under_test host4 1.2.3.4
+
+assert_contains "$ZONEFILE" '^host4\s+A\s+1\.2\.3\.4\s*;$'
+assert_nsd_reloads 1
+
+exit 0

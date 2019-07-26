@@ -1,0 +1,12 @@
+#!/bin/bash
+
+source test-functions.sh
+
+set_ssh_client_ip 5.6.7.8
+
+script_under_test host_name auto
+
+assert_contains "$ZONEFILE" '^host_name\s+A\s+5\.6\.7\.8\s*;$'
+assert_nsd_reloads 1
+
+exit 0
