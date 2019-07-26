@@ -4,7 +4,7 @@ set -e
 
 # run in autowatch mode with "--watch"
 if [ "$1" = "--watch" ]; then
-    while inotifywait tests tests/* test-functions.sh run-tests.sh; do
+    while inotifywait -e modify -e move -e move_self -e create -e delete -e delete_self tests tests/* test-functions.sh run-tests.sh; do
 	./run-tests.sh;
     done
     exit 0
