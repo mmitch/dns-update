@@ -1,5 +1,15 @@
 #!/bin/bash
 
+#
+# runtest.sh - test script for update-client
+# Copyright (C) 2019  Christian Garbs <mitch@cgarbs.de>
+# Licensed under GNU GPL v3 (or later)
+#
+# This file is part of:
+#  dns-update - small dynamic DNS suite using SSH
+#  https://github.com/mmitch/dns-update
+#
+
 set -e
 
 # run in autowatch mode with "--watch"
