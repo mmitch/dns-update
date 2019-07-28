@@ -1,0 +1,25 @@
+#!/bin/bash
+
+source test-functions.sh
+
+SERIAL_MIN=1
+SERIAL_MAX=4294967295
+
+script_under_test host1 1.2.3.4
+
+assert_nsd_reloads 1
+read -r SERIAL _ < "$NSD_RELOADS"
+if [[ ! "$SERIAL" =~ ^[0-9]+$ ]]; then
+    echo "!!! serial '$SERIAL' is not numeric"
+    exit 1
+fi
+if [ "$SERIAL" -le "$SERIAL_MIN" ]; then
+    echo "!!! serial '$SERIAL' is too small; minimum is '$SERIAL_MIN'"
+    exit 1
+fi
+if [ "$SERIAL" -ge "$SERIAL_MAX" ]; then
+    echo "!!! serial '$SERIAL' is too big; maximum is '$SERIAL_MAX'"
+    exit 1
+fi
+
+exit 0
