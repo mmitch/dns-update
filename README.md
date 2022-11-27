@@ -25,7 +25,7 @@ HOW TO INSTALL ON THE SERVER
 ----------------------------
 
 1. Install a nameserver of your choice and serve a zone dedicated to
-   your dynamical IPs.  You propably need a delegation for that zone
+   your dynamical IPs.  You probably need a delegation for that zone
    from somewhere else.  All this is NOT handled in this howto.
 
    My setup works with nsd as nameserver but apart from "please reload
@@ -136,7 +136,7 @@ HOW TO UPDATE THE SERVER
 LOGGING ON THE SERVER
 ---------------------
 
-Your SSH server propably already logs to `/var/log/auth.log`.  There
+Your SSH server probably already logs to `/var/log/auth.log`.  There
 you can find successful client logins as well as diagnostic error
 messages when something goes wrong.
 
