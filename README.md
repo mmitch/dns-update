@@ -1,7 +1,7 @@
 dns-update
 ==========
 
-[![Build Status](https://travis-ci.org/mmitch/dns-update.svg?branch=master)](https://travis-ci.org/mmitch/dns-update)
+[![Build status](https://github.com/mmitch/dns-update/workflows/Tests/badge.svg)](https://github.com/mmitch/dns-update/actions?query=workflow%3ATests)
 [![GPL 3+](https://img.shields.io/badge/license-GPL%203%2B-blue.svg)](http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 
 * dns-update - small dynamic DNS suite using SSH

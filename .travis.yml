@@ -1,5 +1,0 @@
-language: minimal
-
-install: true
-
-script: shellcheck update-client && cd test && ./run-tests.sh

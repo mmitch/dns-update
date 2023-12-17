@@ -1,10 +1,12 @@
 #!/bin/bash
+# shellcheck disable=SC2317 # ignore because declared functions are invoked indirectly
 
 setup_test()
 {
     set -e
 
     TESTDIR=$(mktemp -d)
+    # shellcheck disable=SC2064 # yes, remember $TESTDIR as it is currently set
     trap "rm -r \"$TESTDIR\"" EXIT
 
     BINARY="$TESTDIR/update-client"
