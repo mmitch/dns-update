@@ -56,24 +56,6 @@ assert_contains()
 	exit 1
     fi
     if ! grep -E -q "$EXPECTED" "$FILE"; then
-	echo "!!! $FILENAME does not contain '$EXPECTED' but:"
-	echo "!!! -- START --"
-	cat "$FILE"
-	echo "!!! --- END ---"
-	exit 1
-    fi
-}
-
-# $1 = file to check
-# $2 = expected content
-assert_contains()
-{
-    local FILE="$1" FILENAME="${1##*/}" EXPECTED="$2"
-    if [ ! -e "$FILE" ]; then
-	echo "!!! file '$FILENAME' to be checked not found"
-	exit 1
-    fi
-    if ! grep -E -q "$EXPECTED" "$FILE"; then
 	echo "!!! $FILENAME does not contain '$EXPECTED' but should:"
 	echo "!!! -- START --"
 	cat "$FILE"
